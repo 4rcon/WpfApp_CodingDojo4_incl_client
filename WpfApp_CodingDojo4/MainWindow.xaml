@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WpfApp_CodingDojo4"
         mc:Ignorable="d"
+        DataContext="{Binding Source={StaticResource Locator}, Path=Main}"
         Title="Server" Height="300" Width="400" MinHeight="240" MinWidth="320">
     <Grid Margin="7">
         <Grid.RowDefinitions>
@@ -13,8 +14,8 @@
         </Grid.RowDefinitions>
         <StackPanel Grid.Row="0" VerticalAlignment="Center" HorizontalAlignment="Right" Orientation="Horizontal">
             <Label>Server:</Label>
-            <Button Width="80">Start</Button>
-            <Button Width="80">Stop</Button>
+            <Button Width="80" Command="{Binding StartServerBtnClicked}">Start</Button>
+            <Button Width="80" Command="{Binding StopServerBtnClicked}">Stop</Button>
         </StackPanel>
         <TabControl Grid.Row="1">
             <TabItem Header="Chat">

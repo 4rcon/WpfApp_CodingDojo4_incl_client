@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WpfApp_Client"
         mc:Ignorable="d"
+        DataContext="{Binding Source={StaticResource Locator}, Path=Main}"
         Title="Client" Height="300" Width="400" MinHeight="240" MinWidth="320" >
     <Grid Margin="7">
         <Grid.RowDefinitions>
