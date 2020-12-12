@@ -31,6 +31,7 @@ namespace WpfApp_CodingDojo4.ViewModel
         public ObservableCollection<string> Messages { get; set; }
         public ObservableCollection<string> Users { get; set; }
         public ObservableCollection<string> LogMessages { get; set; }
+        public string SelectedUser { get; set; }
 
 
         #region Start Server Button
@@ -49,8 +50,10 @@ namespace WpfApp_CodingDojo4.ViewModel
                     },
                     () =>
                     {
-                        if (isConnected = false)
+                        if (isConnected == false)
+                        {
                             return true;
+                        }
                         return false;
                     }));
             }
@@ -63,8 +66,8 @@ namespace WpfApp_CodingDojo4.ViewModel
         {
             get
             {
-                return _startConCmd
-                       ?? (_startConCmd = new RelayCommand(
+                return _stopConCmd
+                       ?? (_stopConCmd = new RelayCommand(
                            () =>
                            {
                                server.StopAccepting();
@@ -72,19 +75,53 @@ namespace WpfApp_CodingDojo4.ViewModel
                            },
                            () =>
                            {
-                               if (isConnected = true)
+                               if (isConnected == true)
+                               {
                                    return true;
+                               }
                                return false;
                            }));
             }
         }
         #endregion
 
+        #region Drop/Kick selected User
+
+        private RelayCommand _kickUserCommand;
+
+        public RelayCommand MyKickUserCmd
+        {
+            get
+            {
+                return _kickUserCommand
+                    ?? (_kickUserCommand = new RelayCommand(
+                    () =>
+                    {
+                        server.DiscSelUser(SelectedUser);
+                    }, () => SelectedUser != null));
+            }
+        }
+        #endregion
 
 
         private void DisplayNewMessages(string message)
         {
-            //todo Write GUI Updater to display new messages
+            App.Current.Dispatcher.Invoke(() =>
+            {
+                string name = message.Split(':')[0];
+                if (!Users.Contains(name))
+                {
+                    Users.Add(name);
+                    RaisePropertyChanged("MyUserCounter");
+                }
+
+                if (message.Contains("@quit"))
+                {
+                    server.DiscSelUser(name);
+                }
+                Messages.Add(message);
+                RaisePropertyChanged("MyMessageCounter");
+            });
         }
 
         public MainViewModel()
@@ -92,9 +129,10 @@ namespace WpfApp_CodingDojo4.ViewModel
             Messages = new ObservableCollection<string>();
             Users = new ObservableCollection<string>();
             LogMessages = new ObservableCollection<string>();
-
-
         }
+        
+        public int MyMessageCounter => Messages.Count;
 
+        public int MyUserCounter => Users.Count;
     }
 }

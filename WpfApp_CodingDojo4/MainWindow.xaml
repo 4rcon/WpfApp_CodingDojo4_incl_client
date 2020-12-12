@@ -30,20 +30,23 @@
                         <ColumnDefinition Width="2*"/>
                     </Grid.ColumnDefinitions>
                     <!-- Row 0 -->
-                    <Label VerticalAlignment="Bottom">Connected Users:</Label>
+                    <StackPanel Orientation="Horizontal">
+                        <Label VerticalAlignment="Bottom">Connected Users:</Label>
+                        <Label VerticalAlignment="Bottom" Content="{Binding MyUserCounter}"></Label>
+                    </StackPanel>
                     <StackPanel Grid.Column="1" Orientation="Horizontal">
                         <Label VerticalAlignment="Bottom">Received Messages:</Label>
-                        <Label VerticalAlignment="Bottom">X</Label>
+                        <Label VerticalAlignment="Bottom" Content="{Binding MyMessageCounter}"></Label>
                     </StackPanel>
                     <!-- Row 1 -->
-                    <ListView SelectedItem="{Binding CurrentSelectedUser}" ItemsSource="{Binding Chat[0].ConnectedUsers}" Grid.Row="1">
+                    <ListView SelectedItem="{Binding SelectedUser}" ItemsSource="{Binding Users}" Grid.Row="1">
     
                     </ListView>
-                    <ListView Grid.Column="1" Grid.Row="1" ItemsSource="{Binding Chat[0].Messages}">
+                    <ListView Grid.Column="1" Grid.Row="1" ItemsSource="{Binding Messages}">
                        
                     </ListView>
                     <!-- Row 2 -->
-                    <Button Grid.Row="2" Grid.Column="0" Command="{Binding KickUserBtnClicked}">Drop</Button>
+                    <Button Grid.Row="2" Grid.Column="0" Command="{Binding MyKickUserCmd}">Drop</Button>
                     <Button Grid.Row="2" Grid.Column="1">Save to log</Button>
                 </Grid>
             </TabItem>

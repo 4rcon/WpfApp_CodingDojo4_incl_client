@@ -35,28 +35,71 @@ namespace WpfApp_CodingDojo4.Classes
             acceptingThread = new Thread(new ThreadStart(Accept));
             acceptingThread.IsBackground = true;
             acceptingThread.Start();
+            IsStarted = true;
         }
 
         public void Accept()
         {
             while (acceptingThread.IsAlive)
             {
-                clients.Add(new ClientHandler(serverSocket.Accept(), this.guiInformerAction));
+                try
+                {
+                    clients?.Add(new ClientHandler(serverSocket.Accept(), this.guiInformerAction));
+                }
+                catch (Exception)
+                {
+                    
+                }
+                
             }
         }
 
         public void StopAccepting()
         {
-            serverSocket.Close(); //Socket schließen um neuanmeldungen zu schließen
-            acceptingThread.Abort(); // Thread annahme abbrechen
             // Alle Verbundenen Clients schließen
             foreach (var userClient in clients)
             {
                 userClient.Close();
             }
-            //Entferne alle Clients aus der Liste
-            clients.Clear();
 
+            try
+            {
+                serverSocket.Close(1000); //Socket schließen um neuanmeldungen zu schließen
+                acceptingThread.Abort(); // Thread annahme abbrechen
+                //Entferne alle Clients aus der Liste
+                clients.Clear();
+
+            }
+            catch (Exception)
+            {
+                Console.WriteLine("Server Crashed!");
+            }
+            finally
+            {
+                IsStarted = false;
+            }
+
+        }
+
+        public void Broadcast(string message)
+        {
+            foreach (ClientHandler client in clients)
+            {
+                client.Send(message);
+            }
+        }
+
+        public void DiscSelUser(string username)
+        {
+            foreach (var item in clients)
+            {
+                if (item.Username.Equals(username))
+                {
+                    item.Close();
+                    clients.Remove(item); 
+                    break;
+                }
+            }
         }
     }
 }

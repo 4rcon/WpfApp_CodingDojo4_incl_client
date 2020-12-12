@@ -44,6 +44,7 @@ namespace WpfApp_Client.Classes
 
         public void SendMessage(string message)
         {
+            Console.WriteLine("Sending Message!");
             ClientSocket.Send(Encoding.UTF8.GetBytes(message));
         }
 
@@ -63,7 +64,7 @@ namespace WpfApp_Client.Classes
         private void Close()
         {
             ClientSocket.Close();
-            MessageInformer("Haha you got kicked from the Server. No reason given.");
+            MessageInformer("You've been Disconnected.");
             AbortInformer();
         }
     }

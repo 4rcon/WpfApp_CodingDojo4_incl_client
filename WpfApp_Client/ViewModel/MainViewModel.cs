@@ -21,7 +21,6 @@ namespace WpfApp_Client.ViewModel
     /// </summary>
     public class MainViewModel : ViewModelBase
     {
-        private Handler client;
 
         #region boolean for Connection
 
@@ -52,7 +51,6 @@ namespace WpfApp_Client.ViewModel
         #region ConnectBtnCmd
 
         private RelayCommand _connectButtonCommand;
-
         public RelayCommand ConnectBtnCmd
         {
             get
@@ -67,7 +65,7 @@ namespace WpfApp_Client.ViewModel
                     },
                     () =>
                     {
-                        if (IsConnected == false && MyUsername != null && !MyUsername.Equals(String.Empty))
+                        if (IsConnected == false && MyUsername != null && !MyUsername.Equals(String.Empty) && !MyUsername.Equals("@quit"))
                         {
                             return true;
                         }
@@ -79,9 +77,7 @@ namespace WpfApp_Client.ViewModel
 
         #region Username Property and Textfield
         public const string MyUsernamePropertyName = "MyUsername";
-
         private string _myUsername = String.Empty;
-
         public string MyUsername
         {
             get
@@ -139,7 +135,8 @@ namespace WpfApp_Client.ViewModel
                     ?? (_sendMsgBtnCmd = new RelayCommand(
                     () =>
                     {
-                        client?.SendMessage(SendMsgProp);
+                        client?.SendMessage(MyUsername + ": " + SendMsgProp);
+                        ChatlogObCol.Add("YOU: " + SendMsgProp);
                         SendMsgProp = String.Empty;
                     },
                     () =>
@@ -152,24 +149,16 @@ namespace WpfApp_Client.ViewModel
                     }));
             }
         }
+
         #endregion
 
+        private Handler client;
         public ObservableCollection<string> ChatlogObCol { get; set; } = new ObservableCollection<string>();
-        
-
-
         public MainViewModel()
         {
 
-            if (IsInDesignMode)
-            {
-                // Code runs in Blend --> create design time data.
-            }
-            else
-            {
-                // Code runs "for real"
-            }
         }
+
 
 
         private void Connect()
@@ -180,6 +169,7 @@ namespace WpfApp_Client.ViewModel
                 try
                 {
                     client = new Handler(10200, new Action<string>(MessageReceived), new Action(Disconnect));
+                    if(IsConnected == true) MessageReceived("Connected."); 
                 }
                 catch (Exception)
                 {
