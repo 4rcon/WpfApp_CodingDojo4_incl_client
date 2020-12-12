@@ -14,8 +14,8 @@
         </Grid.RowDefinitions>
         <StackPanel Grid.Row="0" VerticalAlignment="Center" HorizontalAlignment="Right" Orientation="Horizontal">
             <Label>Server:</Label>
-            <Button Width="80" Command="{Binding StartServerBtnClicked}">Start</Button>
-            <Button Width="80" Command="{Binding StopServerBtnClicked}">Stop</Button>
+            <Button Width="80" Command="{Binding StartConnCommand}">Start</Button>
+            <Button Width="80" Command="{Binding StopConnCommand}">Stop</Button>
         </StackPanel>
         <TabControl Grid.Row="1">
             <TabItem Header="Chat">

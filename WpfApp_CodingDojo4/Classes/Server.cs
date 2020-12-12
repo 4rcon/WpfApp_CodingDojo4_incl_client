@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace WpfApp_CodingDojo4.Classes
@@ -13,26 +14,49 @@ namespace WpfApp_CodingDojo4.Classes
         public static bool IsStarted { get; set; }
 
         private Socket serverSocket;
-
+        
         private List<ClientHandler> clients = new List<ClientHandler>();
 
-        public Action<string> informerAction { get; set; }
+        public Thread acceptingThread;
 
-        public Server(Action<string> informerAction)
+        public Action<string> guiInformerAction { get; set; }
+
+        public Server(string ip, int port, Action<string> guiInformerAction)
         {
-            this.informerAction = informerAction;
+            this.guiInformerAction = guiInformerAction;
             serverSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-            serverSocket.Bind(new IPEndPoint(IPAddress.Loopback, 10200));
+            serverSocket.Bind(new IPEndPoint(IPAddress.Parse(ip), port));
             serverSocket.Listen(5);
-            Task.Factory.StartNew(StartAccepting);
+            StartAccepting();
         }
 
-        private void StartAccepting()
+        public void StartAccepting()
         {
-            while (Server.IsStarted)
+            acceptingThread = new Thread(new ThreadStart(Accept));
+            acceptingThread.IsBackground = true;
+            acceptingThread.Start();
+        }
+
+        public void Accept()
+        {
+            while (acceptingThread.IsAlive)
             {
-                clients.Add(new ClientHandler(serverSocket.Accept(), informerAction));
+                clients.Add(new ClientHandler(serverSocket.Accept(), this.guiInformerAction));
             }
+        }
+
+        public void StopAccepting()
+        {
+            serverSocket.Close(); //Socket schließen um neuanmeldungen zu schließen
+            acceptingThread.Abort(); // Thread annahme abbrechen
+            // Alle Verbundenen Clients schließen
+            foreach (var userClient in clients)
+            {
+                userClient.Close();
+            }
+            //Entferne alle Clients aus der Liste
+            clients.Clear();
+
         }
     }
 }

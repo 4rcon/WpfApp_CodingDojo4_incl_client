@@ -61,8 +61,6 @@ namespace WpfApp_Client.ViewModel
                     ?? (_connectButtonCommand = new RelayCommand(
                     () =>
                     {
-                        //todo: What to do when hitting "Connect" button.
-
                         IsConnected = true;
                         Connect();
                         return;
@@ -141,8 +139,7 @@ namespace WpfApp_Client.ViewModel
                     ?? (_sendMsgBtnCmd = new RelayCommand(
                     () =>
                     {
-                        //todo: add what to do with the message
-
+                        client?.SendMessage(SendMsgProp);
                         SendMsgProp = String.Empty;
                     },
                     () =>
@@ -163,8 +160,6 @@ namespace WpfApp_Client.ViewModel
 
         public MainViewModel()
         {
-            
-
 
             if (IsInDesignMode)
             {
@@ -188,7 +183,7 @@ namespace WpfApp_Client.ViewModel
                 }
                 catch (Exception)
                 {
-                    MessageReceived("Cannot connect to Chat. Please try again.");
+                    Disconnect();
                 }
             });
             connectThread.Start();

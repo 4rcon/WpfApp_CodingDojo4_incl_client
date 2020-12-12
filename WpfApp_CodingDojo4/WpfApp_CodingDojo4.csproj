@@ -71,7 +71,6 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Classes\ClientHandler.cs" />
-    <Compile Include="Classes\Message.cs" />
     <Compile Include="Classes\Server.cs" />
     <Compile Include="ViewModel\ChatVm.cs" />
     <Compile Include="ViewModel\LogVm.cs" />

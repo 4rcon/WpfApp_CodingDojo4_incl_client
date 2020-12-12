@@ -14,12 +14,10 @@ namespace WpfApp_CodingDojo4.ViewModel
     {
         public int MessageCounter { get; set; }
         public ObservableCollection<string> ConnectedUsers { get; set; }
-        public ObservableCollection<Message> Messages { get; set; }
 
         public ChatVm()
         {
             ConnectedUsers = new ObservableCollection<string>();
-            Messages = new ObservableCollection<Message>();
         }
     }
 }

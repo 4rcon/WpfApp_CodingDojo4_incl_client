@@ -30,6 +30,7 @@ namespace WpfApp_Client.Classes
             }
             catch (Exception)
             {
+                MessageInformer("Server not Reachable. Please call your Hotline.");
                 AbortInformer(); //Reset Client Connection Communication
             }
             
@@ -56,21 +57,14 @@ namespace WpfApp_Client.Classes
                 message = Encoding.UTF8.GetString(_buffer,0,length); //bei Receive = getString
                 MessageInformer(message); // Übergabe der Message als delegate
             }
-
             Close();
         }
 
         private void Close()
         {
             ClientSocket.Close();
+            MessageInformer("Haha you got kicked from the Server. No reason given.");
             AbortInformer();
         }
-
-        public void Receive()
-        {
-
-        }
-
-
     }
 }

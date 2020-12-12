@@ -1,4 +1,7 @@
+using System;
 using System.Collections.ObjectModel;
+using System.Net.Sockets;
+using System.Runtime.Remoting.Messaging;
 using System.Security.Cryptography.X509Certificates;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.CommandWpf;
@@ -21,65 +24,77 @@ namespace WpfApp_CodingDojo4.ViewModel
     /// </summary>
     public class MainViewModel : ViewModelBase
     {
-        private string currentSelectedUser;
+        private Server server;
+        private const int port = 10200;
+        private const string ipadress = "127.0.0.1";
+        private bool isConnected = false;
+        public ObservableCollection<string> Messages { get; set; }
+        public ObservableCollection<string> Users { get; set; }
+        public ObservableCollection<string> LogMessages { get; set; }
 
-        public string CurrentSelectedUser
+
+        #region Start Server Button
+        private RelayCommand _startConCmd;
+        public RelayCommand StartConnCommand
         {
-            get { return currentSelectedUser; }
-            set { currentSelectedUser = value; }
+            get
+            {
+                return _startConCmd
+                    ?? (_startConCmd = new RelayCommand(
+                    () =>
+                    {
+                        server = new Server(ipadress, port, DisplayNewMessages);
+                        server.StartAccepting();
+                        isConnected = true;
+                    },
+                    () =>
+                    {
+                        if (isConnected = false)
+                            return true;
+                        return false;
+                    }));
+            }
         }
+        #endregion
+
+        #region Stop Server Button
+        private RelayCommand _stopConCmd;
+        public RelayCommand StopConnCommand
+        {
+            get
+            {
+                return _startConCmd
+                       ?? (_startConCmd = new RelayCommand(
+                           () =>
+                           {
+                               server.StopAccepting();
+                               isConnected = false;
+                           },
+                           () =>
+                           {
+                               if (isConnected = true)
+                                   return true;
+                               return false;
+                           }));
+            }
+        }
+        #endregion
 
 
-        public RelayCommand StartServerBtnClicked { get; set; }
-        public RelayCommand StopServerBtnClicked { get; set; }
-        public RelayCommand KickUserBtnClicked { get; set; }
-        public ObservableCollection<ChatVm> Chat { get; set; }
 
-
-
+        private void DisplayNewMessages(string message)
+        {
+            //todo Write GUI Updater to display new messages
+        }
 
         public MainViewModel()
         {
-            StartServerBtnClicked = new RelayCommand(StartServer);
-            StopServerBtnClicked = new RelayCommand(StopServer);
-            KickUserBtnClicked = new RelayCommand(() =>
-            {
-                Chat[0].ConnectedUsers.Remove(CurrentSelectedUser);
-                //TODO Disconnect selected User
-                RaisePropertyChanged();
-            });
+            Messages = new ObservableCollection<string>();
+            Users = new ObservableCollection<string>();
+            LogMessages = new ObservableCollection<string>();
 
-            
-            if (IsInDesignMode)
-            {
-                // Code runs in Blend --> create design time data.
-                GenerateTestUserData();
-            }
-            else
-            {
-                // Code runs "for real"
-                GenerateTestUserData();
-            }
+
         }
 
-
-        private void GenerateTestUserData()
-        {
-            Chat = new ObservableCollection<ChatVm>();
-            Chat.Add(new ChatVm());
-            Chat[0].ConnectedUsers.Add("Nigglas");
-            string connUser = Chat[0].ConnectedUsers[0];
-            Chat[0].Messages.Add(new Message(connUser,"Man schreibt mich mit double-G"));
-        }
-
-        public void StartServer()
-        {
-            Server.IsStarted = true;
-        }
-
-        public void StopServer()
-        {
-            Server.IsStarted = false;
-        }
     }
 }
