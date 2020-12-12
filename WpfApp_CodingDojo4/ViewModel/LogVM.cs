@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace WpfApp_CodingDojo4.ViewModel
 {
-    class LogVM
+    class LogVm
     {
+
     }
 }

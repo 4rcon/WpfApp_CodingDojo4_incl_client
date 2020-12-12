@@ -36,18 +36,14 @@
                         <Label VerticalAlignment="Bottom">X</Label>
                     </StackPanel>
                     <!-- Row 1 -->
-                    <ListView Grid.Row="1">
-                        <ListViewItem>Kevin</ListViewItem>
-                        <ListViewItem>Horst</ListViewItem>
-                        <ListViewItem>Hans</ListViewItem>
+                    <ListView SelectedItem="{Binding CurrentSelectedUser}" ItemsSource="{Binding Chat[0].ConnectedUsers}" Grid.Row="1">
+    
                     </ListView>
-                    <ListView Grid.Column="1" Grid.Row="1">
-                        <ListViewItem>Kevin: hw ar u?</ListViewItem>
-                        <ListViewItem>Horst: henlo</ListViewItem>
-                        <ListViewItem>Hans: ...</ListViewItem>
+                    <ListView Grid.Column="1" Grid.Row="1" ItemsSource="{Binding Chat[0].Messages}">
+                       
                     </ListView>
                     <!-- Row 2 -->
-                    <Button Grid.Row="2" Grid.Column="0">Drop</Button>
+                    <Button Grid.Row="2" Grid.Column="0" Command="{Binding KickUserBtnClicked}">Drop</Button>
                     <Button Grid.Row="2" Grid.Column="1">Save to log</Button>
                 </Grid>
             </TabItem>

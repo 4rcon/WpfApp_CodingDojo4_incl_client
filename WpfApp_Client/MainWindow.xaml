@@ -21,20 +21,18 @@
         </Grid.ColumnDefinitions>
         <!-- Row 0 -->
         <Label>Chat Name:</Label>
-        <TextBox Grid.Column="1"></TextBox>
-        <Button Grid.Column="2">Connect</Button>
+        <TextBox Grid.Column="1" Text="{Binding MyUsername, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="{Binding IsConnected}"></TextBox>
+        <Button Grid.Column="2" Command="{Binding ConnectBtnCmd}">Connect</Button>
         <!-- Row 1 -->
         <Label Grid.Row="1" VerticalAlignment="Bottom">Messages</Label>
         <!-- Row 2 -->
-        <ListView Grid.Row="2" Grid.ColumnSpan="3" Margin="5 0 5 0">
-            <ListViewItem>You: Hw ar u?</ListViewItem>
-            <ListViewItem>Horst: Henlo</ListViewItem>
-            <ListViewItem>Hans: idgaf</ListViewItem>
+        <ListView Grid.Row="2" Grid.ColumnSpan="3" Margin="5 0 5 0" ItemsSource="{Binding ChatlogObCol}">
+            
         </ListView>
         <!-- Row 3 -->
         <Label Grid.Row="3">Message:</Label>
-        <TextBox Grid.Row="3" Grid.Column="1"></TextBox>
-        <Button Grid.Row="3" Grid.Column="2">Send</Button>
+        <TextBox Grid.Row="3" Grid.Column="1" Text="{Binding SendMsgProp, UpdateSourceTrigger=PropertyChanged}"></TextBox>
+        <Button Grid.Row="3" Grid.Column="2" Command="{Binding SendMessageBtnCmd}">Send</Button>
         <Grid.Resources>
             <Style TargetType="Label">
                 <Setter Property="Margin" Value="0"></Setter>

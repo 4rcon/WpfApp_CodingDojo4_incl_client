@@ -71,9 +71,10 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Classes\ClientHandler.cs" />
+    <Compile Include="Classes\Message.cs" />
     <Compile Include="Classes\Server.cs" />
-    <Compile Include="ViewModel\ChatVM.cs" />
-    <Compile Include="ViewModel\LogVM.cs" />
+    <Compile Include="ViewModel\ChatVm.cs" />
+    <Compile Include="ViewModel\LogVm.cs" />
     <Compile Include="ViewModel\MainViewModel.cs" />
     <Compile Include="ViewModel\ViewModelLocator.cs" />
     <Page Include="MainWindow.xaml">
