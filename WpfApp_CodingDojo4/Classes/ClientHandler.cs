@@ -23,8 +23,6 @@ namespace WpfApp_CodingDojo4.Classes
         public string Username { get; private set; }
 
         
-
-
         public ClientHandler(Socket socket, Action<string> message)
         {
             this._socket = socket;
@@ -42,14 +40,21 @@ namespace WpfApp_CodingDojo4.Classes
             {
                 if (Server.IsStarted)
                 {
-                    int length = _socket.Receive(_buffer);
-                    msgR = Encoding.UTF8.GetString(_buffer, 0, length);
-                    if (Username != null && msgR.Contains(":"))
+                    try
                     {
-                        Username = msgR.Split(':')[0];
+                        int length = _socket.Receive(_buffer);
+                        msgR = Encoding.UTF8.GetString(_buffer, 0, length);
+                        if (Username == null && msgR.Contains(":"))
+                        {
+                            Username = msgR.Split(':')[0];
+                        }
+                        //send that to gui
+                        _message(msgR);
                     }
-                    //send that to gui
-                    _message(msgR);
+                    catch (Exception)
+                    {
+                        //Send("@quit");
+                    }
                 }
             }
             Close();

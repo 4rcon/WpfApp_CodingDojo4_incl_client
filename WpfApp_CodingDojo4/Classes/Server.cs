@@ -15,7 +15,7 @@ namespace WpfApp_CodingDojo4.Classes
 
         private Socket serverSocket;
         
-        private List<ClientHandler> clients = new List<ClientHandler>();
+        private List<ClientHandler> clientsHandlersLists = new List<ClientHandler>();
 
         public Thread acceptingThread;
 
@@ -44,7 +44,8 @@ namespace WpfApp_CodingDojo4.Classes
             {
                 try
                 {
-                    clients?.Add(new ClientHandler(serverSocket.Accept(), this.guiInformerAction));
+                    clientsHandlersLists?.Add(new ClientHandler(serverSocket.Accept(), new Action<string>(BroadcastAndGuiInform)));
+                    
                 }
                 catch (Exception)
                 {
@@ -57,7 +58,7 @@ namespace WpfApp_CodingDojo4.Classes
         public void StopAccepting()
         {
             // Alle Verbundenen Clients schließen
-            foreach (var userClient in clients)
+            foreach (var userClient in clientsHandlersLists)
             {
                 userClient.Close();
             }
@@ -67,7 +68,7 @@ namespace WpfApp_CodingDojo4.Classes
                 serverSocket.Close(1000); //Socket schließen um neuanmeldungen zu schließen
                 acceptingThread.Abort(); // Thread annahme abbrechen
                 //Entferne alle Clients aus der Liste
-                clients.Clear();
+                clientsHandlersLists.Clear();
 
             }
             catch (Exception)
@@ -81,22 +82,24 @@ namespace WpfApp_CodingDojo4.Classes
 
         }
 
-        public void Broadcast(string message)
+        public void BroadcastAndGuiInform(string message)
         {
-            foreach (ClientHandler client in clients)
+            foreach (ClientHandler client in clientsHandlersLists)
             {
                 client.Send(message);
             }
+
+            guiInformerAction(message);
         }
 
         public void DiscSelUser(string username)
         {
-            foreach (var item in clients)
+            foreach (ClientHandler clientHandler in clientsHandlersLists)
             {
-                if (item.Username.Equals(username))
+                if (username.Equals(clientHandler.Username))
                 {
-                    item.Close();
-                    clients.Remove(item); 
+                    clientHandler.Close();
+                    clientsHandlersLists.Remove(clientHandler); 
                     break;
                 }
             }

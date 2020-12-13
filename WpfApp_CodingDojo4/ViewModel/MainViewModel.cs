@@ -98,6 +98,9 @@ namespace WpfApp_CodingDojo4.ViewModel
                     () =>
                     {
                         server.DiscSelUser(SelectedUser);
+                        Users.Remove(SelectedUser);
+                        RaisePropertyChanged("MyUserCounter");
+
                     }, () => SelectedUser != null));
             }
         }

@@ -65,7 +65,7 @@ namespace WpfApp_Client.ViewModel
                     },
                     () =>
                     {
-                        if (IsConnected == false && MyUsername != null && !MyUsername.Equals(String.Empty) && !MyUsername.Equals("@quit"))
+                        if (IsConnected == false && MyUsername != null && !MyUsername.Equals(String.Empty) && !MyUsername.Contains("@quit"))
                         {
                             return true;
                         }
@@ -136,7 +136,6 @@ namespace WpfApp_Client.ViewModel
                     () =>
                     {
                         client?.SendMessage(MyUsername + ": " + SendMsgProp);
-                        ChatlogObCol.Add("YOU: " + SendMsgProp);
                         SendMsgProp = String.Empty;
                     },
                     () =>
@@ -193,6 +192,11 @@ namespace WpfApp_Client.ViewModel
         {
             App.Current.Dispatcher.Invoke(() =>
             {
+                if (msgR.StartsWith(MyUsername))
+                {
+                    msgR = msgR.Replace(MyUsername, "YOU");
+                }
+
                 ChatlogObCol.Add(msgR);
             });
 
